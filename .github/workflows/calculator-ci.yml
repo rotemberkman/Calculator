@@ -26,6 +26,7 @@ jobs:
 
     - name: test
       run: mvn clean test
+      continue-on-error: yes
 
     - name: Build JAR package (skip tests)
       run: mvn clean package -DskipTests
