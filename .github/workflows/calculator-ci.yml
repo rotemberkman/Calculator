@@ -82,35 +82,4 @@ jobs:
           target/*.jar
           target/classes/
         retention-days: 15
-            
-    - name: Generate test report (if any tests ran)
-      uses: dorny/test-reporter@v1
-      if: always()
-      with:
-        name: Maven Tests (GUI tests may fail)
-        path: target/surefire-reports/*.xml
-        reporter: java-junit
-        fail-on-error: false
-        
-    - name: Build JAR package (skip tests)
-      run: mvn package -DskipTests
-      
-    - name: Run unit tests separately (non-GUI logic only)
-      run: |
-        echo "Attempting to run only calculation logic tests..."
-        mvn test -Dtest="*Test*" -DfailIfNoTests=false || echo "GUI tests skipped - this is expected"
-      continue-on-error: true
-      
-    - name: Verify JAR was created
-      run: |
-        ls -la target/
-        echo "JAR file details:"
-        ls -la target/*.jar
-        
-    - name: Test JAR execution (headless)
-      run: |
-        echo "Testing main class in headless mode..."
-        export DISPLAY=:99
-        timeout 10s java -Djava.awt.headless=true -cp target/Calculator-1.0-SNAPSHOT.jar com.houarizegai.calculator.App || echo "GUI app tested (timeout expected)"
-      continue-on-error: true
-tention-days: 7
+
