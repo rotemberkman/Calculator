@@ -10,7 +10,9 @@ on:
       - master
 
 jobs:
-  build_test_deploy:
+  build_test_deploy
+a step cannot have both the `uses` and `run` keys
+:
     runs-on: ubuntu-24.04
     
     steps:
@@ -82,21 +84,7 @@ jobs:
           target/*.jar
           target/classes/
         retention-days: 15
-        
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: test-results
-        path: |
-          target/surefire-reports/
-          target/test-classes/
-        re - name: Attempt to run tests (GUI tests may fail in CI)
-      run: |
-        echo "Running tests - GUI-dependent tests expected to fail in headless environment"
-        mvn test -Djava.awt.headless=true || echo "Some tests failed (expected for GUI components)"
-      continue-on-error: true
-      
+            
     - name: Generate test report (if any tests ran)
       uses: dorny/test-reporter@v1
       if: always()
