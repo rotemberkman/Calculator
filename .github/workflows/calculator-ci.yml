@@ -10,9 +10,7 @@ on:
       - master
 
 jobs:
-  build_test_deploy
-a step cannot have both the `uses` and `run` keys
-:
+  build_test_deploy:
     runs-on: ubuntu-24.04
     
     steps:
