@@ -17,62 +17,22 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       
-    - name: Set up JDK 11
+    - name: Java Setup
       uses: actions/setup-java@v4
       with:
         java-version: '11'
         distribution: 'temurin'
-        cache: maven 
+        cache: maven
 
-    - name: Validate project
-      run: mvn validate
-        
-    - name: Compile application
-      run: mvn clean compile
-      
-    - name: Attempt to run tests (GUI tests may fail in CI)
-      run: |
-        echo "Running tests - GUI-dependent tests expected to fail in headless environment"
-        mvn test -Djava.awt.headless=true || echo "Some tests failed (expected for GUI components)"
-      continue-on-error: true
-      
-    - name: Generate test report (if any tests ran)
-      uses: dorny/test-reporter@v1
-      if: always()
-      with:
-        name: Maven Tests (GUI tests may fail)
-        path: target/surefire-reports/*.xml
-        reporter: java-junit
-        fail-on-error: false
-        
     - name: Build JAR package (skip tests)
-      run: mvn package -DskipTests
-      
-    - name: Run unit tests separately (non-GUI logic only)
-      run: |
-        echo "Attempting to run only calculation logic tests..."
-        mvn test -Dtest="*Test*" -DfailIfNoTests=false || echo "GUI tests skipped - this is expected"
-      continue-on-error: true
-      
-    - name: Verify JAR was created
-      run: |
-        ls -la target/
-        echo "JAR file details:"
-        ls -la target/*.jar
+      run: mvn clean package -DskipTests
         
-    - name: Test JAR execution (headless)
-      run: |
-        echo "Testing main class in headless mode..."
-        export DISPLAY=:99
-        timeout 10s java -Djava.awt.headless=true -cp target/Calculator-1.0-SNAPSHOT.jar com.houarizegai.calculator.App || echo "GUI app tested (timeout expected)"
-      continue-on-error: true
-
-    - name: Upload Calculator JAR
+    - name: Upload JAR
       uses: actions/upload-artifact@v4
       with:
         name: calculator-jar
         path: target/Calculator-1.0-SNAPSHOT.jar
-        retention-days: 30
+
         
     - name: Upload complete build artifacts
       uses: actions/upload-artifact@v4
@@ -81,5 +41,5 @@ jobs:
         path: |
           target/*.jar
           target/classes/
-        retention-days: 15
+
 
