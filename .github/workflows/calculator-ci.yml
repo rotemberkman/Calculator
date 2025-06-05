@@ -30,7 +30,7 @@ jobs:
     - name: Compile application
       run: mvn clean compile
       
-       - name: Attempt to run tests (GUI tests may fail in CI)
+    - name: Attempt to run tests (GUI tests may fail in CI)
       run: |
         echo "Running tests - GUI-dependent tests expected to fail in headless environment"
         mvn test -Djava.awt.headless=true || echo "Some tests failed (expected for GUI components)"
